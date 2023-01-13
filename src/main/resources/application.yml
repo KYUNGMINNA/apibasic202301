@@ -1,0 +1,18 @@
+# server.port=8181  :properties ???? ??
+
+
+#yml ?? ??
+server:
+  port: 8181
+
+#spring.data.source.url=xxx
+#spring.data.source.username=xxx
+#spring.data.source.password=xxx
+
+
+#spirng:
+#  datasource:
+#    url: xxx
+#    useranme: xxx
+#    password: xxx
+

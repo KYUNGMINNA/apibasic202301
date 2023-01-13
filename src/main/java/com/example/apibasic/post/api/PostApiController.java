@@ -1,7 +1,11 @@
 package com.example.apibasic.post.api;
 
 
+import com.example.apibasic.post.entity.PostEntity;
+import com.example.apibasic.post.repository.PostRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +21,34 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @RequestMapping("/posts")
+@RequiredArgsConstructor // final을 초기화 해주는 자동생성자
 public class PostApiController {
+
+    //PostRepository에게 의존하는 관계 -
+    //PostRepository가 없으면 아무 기능도 못함
+    //ex) repository가 주방장, controller가 서빙
+    // 서빙하는 사람이 주방장을 직접 구하는 것
+    //private PostRepository postRepository=new PostRepository();
+
+
+    private final PostRepository postRepository;
+
+
+    //@Autowired : 스프링 컨테이너에게 의존 객체를 자동 주입 해달라
+    // 스프링 버전 4 이후로 생성자 단 1개면 @Autowired 생략 가능
+    /*
+        //의존 객체를 누군가가(스프링 컨테이너가) 주입해 주는 것
+    public PostApiController(PostRepository postRepository) {
+        this.postRepository = postRepository;
+    }*/
+
+
 
     //게시물 목록 조회
     @GetMapping   //RequestMapping이 있어 비워놔도 된다.
     public ResponseEntity<?> list(){
         log.info("/posts GET request");
+
         return  null;
     }
 

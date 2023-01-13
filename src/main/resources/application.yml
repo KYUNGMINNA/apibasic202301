@@ -5,6 +5,16 @@
 server:
   port: 8181
 
+logging:
+  level:
+    root: info    # ????? log ??? ??
+
+    com:
+      example:
+        apibasic:
+          req: info # ?? ???? log ??? ??
+
+
 #spring.data.source.url=xxx
 #spring.data.source.username=xxx
 #spring.data.source.password=xxx

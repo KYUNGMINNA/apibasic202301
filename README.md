@@ -1,5 +1,5 @@
 # 스프링 부트 프로젝트 설정
-1. [프로젝트 생성 링크] (https://start.spring.io)
+1. [프로젝트 생성 링크](https://start.spring.io)
 2. HELP.md -> README.md로 이름 변경 -> .gitignore 파일 README.md 제거 
 3. application.properties -> application.yml로 이름 변경
 4. yml 설정으로 톰캣 포트 변경하기

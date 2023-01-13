@@ -1,6 +1,7 @@
 package com.example.apibasic.post.api;
 
 
+import com.example.apibasic.post.dto.PostCreateDTO;
 import com.example.apibasic.post.entity.PostEntity;
 import com.example.apibasic.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 //리소스 : 게시물 (Post)
@@ -48,8 +51,10 @@ public class PostApiController {
     @GetMapping   //RequestMapping이 있어 비워놔도 된다.
     public ResponseEntity<?> list(){
         log.info("/posts GET request");
-
-        return  null;
+        List<PostEntity> list=postRepository.findAll();
+        return  ResponseEntity
+                .ok()
+                .body(list);
     }
 
     //게시물 개별 조회
@@ -58,13 +63,27 @@ public class PostApiController {
            //@PathVariable("postNo") Long No){
             @PathVariable Long postNo){
         log.info("/posts/{} GET request",postNo);
-        return  null;
+
+        PostEntity post = postRepository.findOne(postNo);
+        return ResponseEntity
+                .ok()
+                .body(post);
     }
+
+
     // 게시물 등록
     @PostMapping
-    public ResponseEntity<?> create() {
+    public ResponseEntity<?> create(@RequestBody PostCreateDTO createDTO) {
         log.info("/posts POST request");
-        return null;
+        log.info("게시물 정보 : {}",createDTO);
+
+        //dto를 entity로 변환 작업
+        PostEntity entity=createDTO.toEntity();
+
+        boolean flag=postRepository.save(entity);
+
+        return flag?ResponseEntity.ok().body("INSERT-SUCCESS")
+                :ResponseEntity.badRequest().body("INSERT_FAIL");
     }
 
     // 게시물 수정

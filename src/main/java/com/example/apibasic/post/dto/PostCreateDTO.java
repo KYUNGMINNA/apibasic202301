@@ -28,4 +28,6 @@ public class PostCreateDTO {
                 .createDate(LocalDateTime.now())
                 .build();
     }
+
+
 }

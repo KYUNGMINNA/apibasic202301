@@ -2,6 +2,9 @@ package com.example.apibasic.post.api;
 
 
 import com.example.apibasic.post.dto.PostCreateDTO;
+import com.example.apibasic.post.dto.PostDetailResponseDTO;
+import com.example.apibasic.post.dto.PostModifyDTO;
+import com.example.apibasic.post.dto.PostResponseDTO;
 import com.example.apibasic.post.entity.PostEntity;
 import com.example.apibasic.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 
 //리소스 : 게시물 (Post)
@@ -52,10 +59,19 @@ public class PostApiController {
     public ResponseEntity<?> list(){
         log.info("/posts GET request");
         List<PostEntity> list=postRepository.findAll();
+
+        //엔터티 리스트를 DTO리스트로 변환해서 클라이언트에 응답
+        List<PostResponseDTO> responseDTOList=list.stream()
+                //.map(et->new PostResponseDTO(et))
+                .map(PostResponseDTO::new)
+                .collect(toList());
+
         return  ResponseEntity
                 .ok()
-                .body(list);
+                .body(responseDTOList);
     }
+
+    //게시물 개별 조회시에는 클라이언트에게  추가로 수정시간 정보를 제공하세요
 
     //게시물 개별 조회
     @GetMapping("/{postNo}")
@@ -65,9 +81,13 @@ public class PostApiController {
         log.info("/posts/{} GET request",postNo);
 
         PostEntity post = postRepository.findOne(postNo);
+
+        //엔티티를 DTO로 변환
+        PostResponseDTO postResponseDTO=new PostDetailResponseDTO(post);
+
         return ResponseEntity
                 .ok()
-                .body(post);
+                .body(postResponseDTO);
     }
 
 
@@ -86,17 +106,40 @@ public class PostApiController {
                 :ResponseEntity.badRequest().body("INSERT_FAIL");
     }
 
+    //게시물 수정은 제목 ,내용만 수정 가능해야 합니다.
     // 게시물 수정
     @PatchMapping("/{postNo}")
-    public ResponseEntity<?> modify(@PathVariable Long postNo) {
+    public ResponseEntity<?> modify(@PathVariable Long postNo,@RequestBody PostModifyDTO modifyDTO) {
         log.info("/posts/{} PATCH request", postNo);
-        return null;
+
+        // 수정 전 데이터 조회하기
+        PostEntity entity = postRepository.findOne(postNo);
+        // 수정 진행
+        String modTitle = modifyDTO.getTitle();
+        String modContent = modifyDTO.getContent();
+
+        if (modTitle != null) entity.setTitle(modTitle);
+        if (modContent != null) entity.setContent(modContent);
+        entity.setModifyDate(LocalDateTime.now());
+
+        boolean flag = postRepository.save(entity);
+        return flag
+                ? ResponseEntity.ok().body("MODIFY-SUCCESS")
+                : ResponseEntity.badRequest().body("MODIFY-FAIL")
+                ;
+
     }
+
+
     // 게시물 삭제
     @DeleteMapping("/{postNo}")
     public ResponseEntity<?> remove(@PathVariable Long postNo) {
         log.info("/posts/{} DELETE request", postNo);
-        return null;
+        boolean flag = postRepository.delete(postNo);
+        return flag
+                ? ResponseEntity.ok().body("DELETE-SUCCESS")
+                : ResponseEntity.badRequest().body("DELETE-FAIL")
+                ;
     }
 
 }

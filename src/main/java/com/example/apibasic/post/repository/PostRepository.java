@@ -28,6 +28,12 @@ public class PostRepository {
         }
 
         return postEntityList;
+
+        /* 스트림으로 사용하는 방법
+        return posts.keySet().stream()
+                .map(posts::get)
+                .collect(toList());
+        */
     }
 
 
@@ -43,7 +49,7 @@ public class PostRepository {
     //게시물 등록,수정
     public boolean save(PostEntity postEntity){
         PostEntity post = posts.put(postEntity.getPostNo(), postEntity);
-        return  post!=null;
+        return  true;
     }
 
     //게시물 삭제

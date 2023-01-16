@@ -106,7 +106,7 @@ public class PostApiController {
     @Parameters({
             @Parameter(name = "작성자", description = "게시물 작성자를 입력", example = "김철수")
             ,@Parameter(name = "내용", description = "글 내용을 입력", example = "하하하호호호~~")
-    }) // 파라미터에 넣을 수 있는 것 설명
+    }) // 파라미터에 넣을 수 있는 것 설명  --swagger 전용 아노테이션
     @PostMapping
     public ResponseEntity<?> create(
             @Validated @RequestBody PostCreateDTO createDTO

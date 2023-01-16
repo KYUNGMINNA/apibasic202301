@@ -6,6 +6,7 @@ package com.example.apibasic.jpabasic.repository;
 import com.example.apibasic.jpabasic.entity.Gender;
 import com.example.apibasic.jpabasic.entity.MemberEntity;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,7 @@ import java.util.Optional;
 
 import static com.example.apibasic.jpabasic.entity.Gender.FEMALE;
 import static com.example.apibasic.jpabasic.entity.Gender.MALE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest // 스프링 컨테이너를 사용해서 스프링이 관리하는 객체를 주입받는 기능 활성화
 
@@ -28,6 +28,35 @@ class MemberRepositoryTest {
     //스프링 빈을 주입받을 때 필드주입을 사용(junit5에서는)
     @Autowired
     MemberRepository memberRepository;
+
+    //@BeforeEach :각 테스트 실행하기 전에 실행되는 내용
+    @BeforeEach
+    void bulkInsert(){
+        MemberEntity saveMember1 = MemberEntity.builder()
+                .account("zzz1234")
+                .password("1234")
+                .nickName("꾸러긔")
+                .gender(FEMALE)
+                .build();
+        MemberEntity saveMember2 = MemberEntity.builder()
+                .account("abc4321")
+                .password("4321")
+                .nickName("궁예")
+                .gender(MALE)
+                .build();
+        MemberEntity saveMember3 = MemberEntity.builder()
+                .account("ppp9999")
+                .password("9888")
+                .nickName("찬호박")
+                .gender(MALE)
+                .build();
+
+        memberRepository.save(saveMember1);
+        memberRepository.save(saveMember2);
+        memberRepository.save(saveMember3);
+    }
+
+
 
     //테스트 메서드
     //테스트는 여러번 돌려도 성공한 테스트는 계속 성공해야 한다.
@@ -72,28 +101,9 @@ class MemberRepositoryTest {
     @Rollback
     void findAllTest() {
         // given
-        MemberEntity saveMember1 = MemberEntity.builder()
-                .account("zzz1234")
-                .password("1234")
-                .nickName("꾸러긔")
-                .gender(FEMALE)
-                .build();
-        MemberEntity saveMember2 = MemberEntity.builder()
-                .account("abc4321")
-                .password("4321")
-                .nickName("궁예")
-                .gender(MALE)
-                .build();
-        MemberEntity saveMember3 = MemberEntity.builder()
-                .account("ppp9999")
-                .password("9888")
-                .nickName("찬호박")
-                .gender(MALE)
-                .build();
+
         // when
-        memberRepository.save(saveMember1);
-        memberRepository.save(saveMember2);
-        memberRepository.save(saveMember3);
+
 
         List<MemberEntity> memberEntityList = memberRepository.findAll();
 
@@ -109,6 +119,53 @@ class MemberRepositoryTest {
 
     }
 
+    @Test
+    @DisplayName("회원 데이터를 3개 등록하고 그 중 하나의 회원을 삭제해야 한다.")
+    @Transactional
+    @Rollback
+    void deleteTest(){
+        //given
+        Long userCode=2L;
+
+        //when
+        memberRepository.deleteById(userCode);
+        Optional<MemberEntity> foundMember = memberRepository.findById(userCode);
+
+        //tehn
+        assertFalse(foundMember.isPresent());
+
+        assertEquals(2, memberRepository.findAll().size());
+    }
+
+    @Test
+    @DisplayName("2번 회원의 닉네임과 성별을 수정해야 한다.")
+    @Transactional
+    @Rollback
+    void modifyTest(){
+        //given
+        Long userCode=2L;
+        String newNickName="닭강정";
+        Gender newGender= FEMALE;
+
+        //when
+        //JPA에서의 수정은 조회 후 setter로 변경하면 update 동작
+        Optional<MemberEntity> foundMember = memberRepository.findById(userCode);
+        foundMember.ifPresent(m->{
+            m.setNickName(newNickName);
+            m.setGender(newGender);
+        });
+
+
+        Optional<MemberEntity> modifyMember = memberRepository.findById(userCode);
+
+        //then
+        assertEquals("닭강정",modifyMember.get().getNickName());
+        assertEquals(FEMALE,modifyMember.get().getGender());
+
+
+
+
+    }
 
 
 

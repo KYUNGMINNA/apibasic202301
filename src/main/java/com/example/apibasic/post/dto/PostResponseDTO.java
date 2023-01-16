@@ -18,7 +18,7 @@ public class PostResponseDTO {
     private String author;
     private String title;
     private String content;
-    private List<String> hashTags;
+    //private List<String> hashTags;
 
     @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDateTime regDate;
@@ -32,7 +32,7 @@ public class PostResponseDTO {
         this.content=entity.getContent();
         this.title=entity.getTitle();
         this.regDate=entity.getCreateDate();
-        this.hashTags=entity.getHashTags();
+       // this.hashTags=entity.getHashTags();
     }
 
 

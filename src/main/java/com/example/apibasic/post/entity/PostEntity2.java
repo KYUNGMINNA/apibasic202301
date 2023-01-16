@@ -1,11 +1,8 @@
 package com.example.apibasic.post.entity;
 
-import com.example.apibasic.post.dto.PostResponseDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,23 +10,15 @@ import java.util.List;
 @Setter @Getter @ToString
 @NoArgsConstructor @AllArgsConstructor @EqualsAndHashCode
 @Builder
-@Entity
-@Table(name = "tbl_post")
-public class PostEntity {
+public class PostEntity2 {
 
-    @Id // 기본키 설정             //IDENTITY : mariadb or mysql  : SEQUENCE : oracle
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본키 생성 전략
+    public static long sequence=1L; //연속된 일련 번호
+
     private Long postNo; //게시물 식별 번호
-
-    @Column(nullable = false)
     private String writer; //작성자
-
-    @Column(nullable = false)
     private String title; //제목
     private String content; //내용
-
-
-    //private List<String> hashTags; //해시테그 목록
+    private List<String> hashTags; //해시테그 목록
 
 
     //LocalDateTime은  년 월 일 시 분 초

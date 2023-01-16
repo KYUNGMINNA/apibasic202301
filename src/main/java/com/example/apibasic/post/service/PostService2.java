@@ -5,12 +5,10 @@ import com.example.apibasic.post.entity.PostEntity;
 import com.example.apibasic.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -19,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 //스프링빈 등록 = 객체의 라이프사이클을 스프링컨테이너에게 위임
 //@Component가 기본인데 ,Srping MVC에는 각각의 Layer에 맞는 아노테이션이 있음
 @Service
-public class PostService {
+public class PostService2 {
 
     private final PostRepository postRepository;
 
@@ -43,13 +41,12 @@ public class PostService {
 
     // 개별 조회 중간처리
     public PostDetailResponseDTO getDetail(Long postNo) {
-        Optional<PostEntity> post = postRepository.findById(postNo);
-        PostEntity postEntity = post.get();
+        PostEntity post = postRepository.
 
-        if (postEntity == null) throw new RuntimeException(postNo + "번 게시물이 존재하지 않음!!");
+        if (post == null) throw new RuntimeException(postNo + "번 게시물이 존재하지 않음!!");
 
         // 엔터티를 DTO로 변환
-        return new PostDetailResponseDTO(postEntity);
+        return new PostDetailResponseDTO(post);
     }
 
     //매개 변수를 final로 선언해서  데이터가
@@ -58,30 +55,27 @@ public class PostService {
     public boolean insert(final PostCreateDTO createDTO) {
         // dto를 entity변환 작업
         final PostEntity entity = createDTO.toEntity();
-        postRepository.save(entity);
-        return true;
+
+        return postRepository.save(entity);
     }
 
     // 수정 중간 처리
     public boolean update(final Long postNo, final PostModifyDTO modifyDTO) {
         // 수정 전 데이터 조회하기
-        Optional<PostEntity> post = postRepository.findById(postNo);
-        PostEntity postEntity = post.get();
+        final PostEntity entity = postRepository.findOne(postNo);
         // 수정 진행
         String modTitle = modifyDTO.getTitle();
         String modContent = modifyDTO.getContent();
 
-        if (modTitle != null) postEntity.setTitle(modTitle);
-        if (modContent != null) postEntity.setContent(modContent);
-        postEntity.setModifyDate(LocalDateTime.now());
-        postRepository.save(postEntity);
-        return true;
+        if (modTitle != null) entity.setTitle(modTitle);
+        if (modContent != null) entity.setContent(modContent);
+        entity.setModifyDate(LocalDateTime.now());
+
+        return postRepository.save(entity);
     }
     // 삭제 중간처리
     public boolean delete(final Long postNo) {
-
-         postRepository.deleteById(postNo);
-        return true;
+        return postRepository.delete(postNo);
     }
 
 

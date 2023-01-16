@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -99,7 +102,20 @@ public class PostApiController {
 
     // 게시물 등록
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody PostCreateDTO createDTO) {
+    public ResponseEntity<?> create(
+            @Validated @RequestBody PostCreateDTO createDTO
+            , BindingResult result // 검증 에러 정보를 갖고 있는 객체
+    ) {
+        if (result.hasErrors()) { // 검증에러가 발생할 시 true 리턴
+            List<FieldError> fieldErrors = result.getFieldErrors();
+            fieldErrors.forEach(err -> {
+                log.warn("invalidated client data - {}", err.toString());
+            });
+            return ResponseEntity
+                    .badRequest()
+                    .body(fieldErrors);
+        }
+
         log.info("/posts POST request");
         log.info("게시물 정보: {}", createDTO);
 
@@ -108,7 +124,6 @@ public class PostApiController {
                 : ResponseEntity.badRequest().body("INSERT-FAIL")
                 ;
     }
-
 
     //게시물 수정은 제목 ,내용만 수정 가능해야 합니다.
     // 게시물 수정

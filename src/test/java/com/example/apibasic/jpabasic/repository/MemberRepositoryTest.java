@@ -147,6 +147,14 @@ class MemberRepositoryTest {
         String newNickName="닭강정";
         Gender newGender= FEMALE;
 
+
+      /*  if (foundMember.isPresent()) {
+            MemberEntity m = foundMember.get();
+            m.setNickName(newNickName);
+            m.setGender(newGender);
+            memberRepository.save(m);
+        }*/
+
         //when
         //JPA에서의 수정은 조회 후 setter로 변경 후 다시 save해야 됨
         Optional<MemberEntity> foundMember = memberRepository.findById(userCode);

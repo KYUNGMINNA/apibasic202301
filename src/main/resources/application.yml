@@ -22,10 +22,9 @@ springdoc:
 #spring.data.source.username=xxx
 #spring.data.source.password=xxx
 
-
-#spirng:
-#  datasource:
-#    url: xxx
-#    useranme: xxx
-#    password: xxx
-
+# database connection
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3306/demodb
+    username: root
+    password: mariadb

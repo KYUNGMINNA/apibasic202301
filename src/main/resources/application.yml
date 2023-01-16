@@ -22,9 +22,23 @@ springdoc:
 #spring.data.source.username=xxx
 #spring.data.source.password=xxx
 
-# database connection
 spring:
+  # database connection
   datasource:
     url: jdbc:mariadb://localhost:3306/demodb
     username: root
     password: mariadb
+  # jpa config
+  jpa:
+    database: mysql # 실제사용할 dbms 지정
+    database-platform: org.hibernate.dialect.MariaDB106Dialect #방언 설정
+    show-sql: true #실행되는 SQL문 로그를 볼 것인지
+    generate-ddl: true  # 각 DBMS에 맞는 고유 기능을 사용할 지의 여부 ex)오라클의 시퀀스, mysql의 auto increment
+    hiberante:
+      ddl-auto: create  # DDL 문을 처리할 때 설정
+
+# 개발 서버는 create or update
+# create : 매 실행마다 DDL을 다시 재실행
+# update : 매 실행마다 바뀐 부분의 DDL을 ALTER문으로 수정
+# none :  DDL을 실행하지 않음  - 운영 서버에서는 none으로 둔다.
+

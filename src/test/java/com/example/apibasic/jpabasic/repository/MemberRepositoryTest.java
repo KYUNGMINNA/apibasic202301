@@ -148,11 +148,12 @@ class MemberRepositoryTest {
         Gender newGender= FEMALE;
 
         //when
-        //JPA에서의 수정은 조회 후 setter로 변경하면 update 동작
+        //JPA에서의 수정은 조회 후 setter로 변경 후 다시 save해야 됨
         Optional<MemberEntity> foundMember = memberRepository.findById(userCode);
         foundMember.ifPresent(m->{
             m.setNickName(newNickName);
             m.setGender(newGender);
+            memberRepository.save(m);
         });
 
 

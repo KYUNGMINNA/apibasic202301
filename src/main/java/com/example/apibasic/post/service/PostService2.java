@@ -1,3 +1,4 @@
+/*
 package com.example.apibasic.post.service;
 
 import com.example.apibasic.post.dto.*;
@@ -81,3 +82,4 @@ public class PostService2 {
 
 
 }
+*/

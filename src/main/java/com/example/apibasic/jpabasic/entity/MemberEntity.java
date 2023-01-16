@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of="userId")//userId 값으로 비교 해봤을 때 같으면 같은 것
+@Builder
 // JPA
 @Entity // JPA의 Entity객체 : DB와 연동되는 객체
 @Table(name = "tbl_member") //테이블 이름 지정

@@ -14,6 +14,9 @@ logging:
         apibasic:
           req: info # ?? ???? log ??? ??
 
+springdoc:
+  swagger-ui:
+    path: /myapi.html
 
 #spring.data.source.url=xxx
 #spring.data.source.username=xxx

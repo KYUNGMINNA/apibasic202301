@@ -3,11 +3,8 @@ package com.example.apibasic.post.dto;
 import com.example.apibasic.post.entity.PostEntity;
 import lombok.*;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter @Setter @ToString
@@ -28,6 +25,7 @@ public class PostCreateDTO {
     @Size(min = 2,max = 5) // 글자수는 2~5자 사이
     private String writer;
     @NotBlank
+
     //@Min(1) @Max(20) -- number 타입만
     @Size(min = 0,max = 50)
     private String title;
@@ -38,11 +36,11 @@ public class PostCreateDTO {
     public PostEntity toEntity(){
         return  PostEntity.builder()
                 //.postNo(PostEntity.sequence++)
+                //.hashTags(this.hashTags)
+                //.createDate(LocalDateTime.now())
                 .writer(this.writer)
                 .content(this.content)
                 .title(this.title)
-                //.hashTags(this.hashTags)
-                .createDate(LocalDateTime.now())
                 .build();
     }
 

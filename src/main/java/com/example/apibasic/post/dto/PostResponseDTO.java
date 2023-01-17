@@ -23,8 +23,6 @@ public class PostResponseDTO {
     @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDateTime regDate;
 
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss")
-    private  LocalDateTime modifyDate;
 
     //엔터티를 DTO로 변환하는 생성자
     public PostResponseDTO(PostEntity entity){

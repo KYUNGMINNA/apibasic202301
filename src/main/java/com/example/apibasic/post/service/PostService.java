@@ -5,12 +5,9 @@ import com.example.apibasic.post.entity.PostEntity;
 import com.example.apibasic.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -36,52 +33,80 @@ public class PostService {
                 //.map(et->new PostResponseDTO(et))
                 .map(PostResponseDTO::new).collect(toList());
 
-        PostListResponseDTO listResponseDTO = PostListResponseDTO.builder().count(responseDTOList.size()).posts(responseDTOList).build();
+        PostListResponseDTO listResponseDTO = PostListResponseDTO
+                                                .builder()
+                                                .count(responseDTOList.size())
+                                                .posts(responseDTOList)
+                                                .build();
 
         return listResponseDTO;
     }
 
     // 개별 조회 중간처리
     public PostDetailResponseDTO getDetail(Long postNo) {
-        Optional<PostEntity> post = postRepository.findById(postNo);
-        PostEntity postEntity = post.get();
+        PostEntity post = postRepository
+                        .findById(postNo)
+                        .orElseThrow(()->new RuntimeException(
+                                postNo + "번 게시물이 존재하지 않음!!"
+                        ));
 
-        if (postEntity == null) throw new RuntimeException(postNo + "번 게시물이 존재하지 않음!!");
+        //Optional :후속 행동들으 처리할 수 있게 도와주는 유틸 메서드를 갖고 있음
+        // orElse(널이면 할 행동) , orElseThrow() :널이면 발생시키겠따.
+        //if (postEntity == null) throw new RuntimeException(postNo + "번 게시물이 존재하지 않음!!");
 
         // 엔터티를 DTO로 변환
-        return new PostDetailResponseDTO(postEntity);
+        return new PostDetailResponseDTO(post);
     }
 
     //매개 변수를 final로 선언해서  데이터가
     //바뀌는것을 방지 ( DB에 안정적으로 넘기기위해)
     // 등록 중간처리
-    public boolean insert(final PostCreateDTO createDTO) {
+    public PostDetailResponseDTO insert(final PostCreateDTO createDTO)
+        //throws IllegalArgumentException, OptimisticLockingFailureException
+            throws  RuntimeException
+    {
         // dto를 entity변환 작업
         final PostEntity entity = createDTO.toEntity();
-        postRepository.save(entity);
-        return true;
+
+        //메서드 클릭해 봤을 때 던지기 있으면 에러 발생 가능성 있음
+        PostEntity savedPost = postRepository.save(entity);
+        //저장딘 객체를 DTO로 변환해서 반환
+
+
+
+        return new PostDetailResponseDTO(savedPost);
     }
 
     // 수정 중간 처리
-    public boolean update(final Long postNo, final PostModifyDTO modifyDTO) {
+    public PostDetailResponseDTO update(final Long postNo, final PostModifyDTO modifyDTO)
+    throws RuntimeException{
+
         // 수정 전 데이터 조회하기
-        Optional<PostEntity> post = postRepository.findById(postNo);
-        PostEntity postEntity = post.get();
+       final PostEntity entity = postRepository
+                        .findById(postNo)
+                        .orElseThrow(
+                                ()->new RuntimeException("수정 전 데이터가 존재하지 않습니다.")
+                        );
+
         // 수정 진행
         String modTitle = modifyDTO.getTitle();
         String modContent = modifyDTO.getContent();
 
-        if (modTitle != null) postEntity.setTitle(modTitle);
-        if (modContent != null) postEntity.setContent(modContent);
-        postEntity.setModifyDate(LocalDateTime.now());
-        postRepository.save(postEntity);
-        return true;
+        if (modTitle != null) entity.setTitle(modTitle);
+        if (modContent != null) entity.setContent(modContent);
+
+        PostEntity modifiedPost = postRepository.save(entity);
+
+        return new PostDetailResponseDTO(modifiedPost);
     }
     // 삭제 중간처리
-    public boolean delete(final Long postNo) {
+    public void delete(final Long postNo)
+            throws RuntimeException {
+        //delete () : 엔터티가 필요
+
+        //deleteById() : Id가 필요
 
          postRepository.deleteById(postNo);
-        return true;
     }
 
 

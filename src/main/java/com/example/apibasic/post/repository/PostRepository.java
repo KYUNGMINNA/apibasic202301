@@ -8,9 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
-
-// 게시물 데이터를 CRUD(생성 ,조회 ,수정,삭제)
-@Repository //이 클래스로 만든 객체는 스프링이 라이프사이클을 관리좀 해줘라(맡기는것)
+//JpaRepository 상속 받으면 ,해당 인터페이스를 프록시 객체로 만들어  주고
+//@Reposotry까지 붙여 준다.
 public interface PostRepository extends JpaRepository<PostEntity,Long> {
 
 

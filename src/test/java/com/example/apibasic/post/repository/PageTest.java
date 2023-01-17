@@ -20,7 +20,7 @@ class PageTest {
 
     @BeforeEach
     void bulkInsert() {
-        for (int i = 1; i < 501; i++) {
+        for (int i = 1; i <=483; i++) {
             PostEntity post = PostEntity.builder()
                     .title("안녕~~" + i)
                     .writer("김말종" + i)
@@ -40,7 +40,7 @@ class PageTest {
                 .build();
 
 
-        //페이지 정보 생성 ::최신글이 글번호가 크다라고 가정하지 마라!!하기 나름
+        //페이지 정보 생성 ::최신글이 글번호가 크다라고 가정하지 마라!! 번호가 아니라 임의의 문자열일 수 도 있다.
         PageRequest pageInfo = PageRequest.of(
                 dto.getPage() - 1,
                 dto.getSizePerPage(),

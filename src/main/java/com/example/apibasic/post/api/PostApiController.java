@@ -61,7 +61,7 @@ public class PostApiController {
 
     //게시물 목록 조회
     @GetMapping   //RequestMapping이 있어 비워놔도 된다.
-    public ResponseEntity<?> list(PageRequestDTO pageRequestDTO){
+    public ResponseEntity<?> list(PageRequestDTO pageRequestDTO){  //클라이언트가 요청한 페이지 정보 
         log.info("/posts GET request");
         log.info("request page info- {}",pageRequestDTO);
 
@@ -69,7 +69,7 @@ public class PostApiController {
         try {
             //Service에서 isEMpty() 있으면 throw new 하는 코드 있어
             //예외처리해야함
-            PostListResponseDTO listResponseDTO = postService.getList();
+            PostListResponseDTO listResponseDTO = postService.getList(pageRequestDTO);
 
             return  ResponseEntity
                     .ok()

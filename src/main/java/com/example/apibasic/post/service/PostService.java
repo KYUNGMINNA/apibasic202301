@@ -5,6 +5,10 @@ import com.example.apibasic.post.entity.PostEntity;
 import com.example.apibasic.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +25,18 @@ public class PostService {
     private final PostRepository postRepository;
 
     //목록 조회 중간 처리
-    public PostListResponseDTO getList() {
-        List<PostEntity> list = postRepository.findAll();
+    public PostListResponseDTO getList(PageRequestDTO pageRequestDTO) {
+
+        //Pageable 로 받아도 되고 , PageReuest로 받아오 된다 왜냐면 Pagerequest는 AbstractPageRequest를 상속받고 ,AbstractPageRequest는  implements Pageable
+        Pageable pageable = PageRequest.of(
+                pageRequestDTO.getPage() - 1,
+                pageRequestDTO.getSizePerPage(),
+                Sort.Direction.DESC,
+                "createDate"
+        );
+
+        final Page<PostEntity> pageData=postRepository.findAll(pageable); // Page는 페이지 정보 뿐만 아니라 , 객체 정보도 갖고 있음
+        List<PostEntity> list = pageData.getContent();
 
         if (list.isEmpty()) {
             throw new RuntimeException("조회 결고가 없어용~");
@@ -30,14 +44,16 @@ public class PostService {
 
         //엔터티 리스트를 DTO리스트로 변환해서 클라이언트에 응답
         List<PostResponseDTO> responseDTOList = list.stream()
-                //.map(et->new PostResponseDTO(et))
-                .map(PostResponseDTO::new).collect(toList());
+                                                //.map(et->new PostResponseDTO(et))
+                                                .map(PostResponseDTO::new)
+                                                .collect(toList());
 
-        PostListResponseDTO listResponseDTO = PostListResponseDTO
-                                                .builder()
+        PostListResponseDTO listResponseDTO = PostListResponseDTO.builder()
                                                 .count(responseDTOList.size())
+                                                .pageInfo(new PageResponseDTO<PostEntity>(pageData))
                                                 .posts(responseDTOList)
                                                 .build();
+
 
         return listResponseDTO;
     }

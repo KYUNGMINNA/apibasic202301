@@ -284,6 +284,21 @@ class MemberRepositoryTest {
     }
 
 
+    @Test
+    @Transactional
+    @DisplayName("JPQL을 사용해서 nickName이 '꾸러긔'인 사람 삭제")
+    void jpqlTest4(){
+        //given
+        String nickName="꾸러긔";
+
+        memberRepository.deleteByNickName(nickName);
+
+
+
+
+
+    }
+
 
 
 

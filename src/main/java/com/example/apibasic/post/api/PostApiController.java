@@ -61,8 +61,9 @@ public class PostApiController {
 
     //게시물 목록 조회
     @GetMapping   //RequestMapping이 있어 비워놔도 된다.
-    public ResponseEntity<?> list(){
+    public ResponseEntity<?> list(PageRequestDTO pageRequestDTO){
         log.info("/posts GET request");
+        log.info("request page info- {}",pageRequestDTO);
 
 
         try {

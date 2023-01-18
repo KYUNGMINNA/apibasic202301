@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 //게시물의 데이터 자바빈즈
@@ -32,8 +33,9 @@ public class PostEntity {
     private String title; //제목
     private String content; //내용
 
-
-    //private List<String> hashTags; //해시테그 목록
+    //양방향 매핑
+    @OneToMany(mappedBy = "post")//HashTagEntity의 필드명
+    private List<HashTagEntity> hashTags=new ArrayList<>(); //해시테그 목록
 
 
     //LocalDateTime은  년 월 일 시 분 초

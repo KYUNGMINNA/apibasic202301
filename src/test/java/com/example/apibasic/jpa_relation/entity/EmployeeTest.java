@@ -65,6 +65,8 @@ class EmployeeTest {
 
         System.out.println("foundEmp = " + foundEmp.getEmpName());
 
+        System.out.println("foundEmp.getDepartment().getDeptId() = " + foundEmp.getDepartment().getDeptId());
+
     }
 
     @Test
